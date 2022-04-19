@@ -154,27 +154,54 @@ int main()
                 continue;
             }
             if (menuChoice == 1){
-                Question q = Map.getQuestion(currentVal);
-                cout << "Difficulty: " << q.getMoneyVal() << endl << q.getQuestion() << "?" << endl;
-                cout << "Press Any Key To Display Answer" << endl;
-                char answer;
-                cin >> answer;
-                cout << q.getAnswer() << endl;
-                cout << "Was Your Answer Correct?" << endl << "1. Yes" << endl << "2. No" << endl;
-                cin >> stat;
-                if (stat == 1) {
-                    correct++;
-                }
-                if (stat == 2) {
-                    correct = 0;
+                cout << "STUDY MODE: CHOOSE ONE" << endl << "1. Read Question" << endl << "2. Advance Level" << endl << "3. Decrease Level" << endl <<"4. Back " <<endl;
+                cout << endl;
+                int option;
+                cin >> option;
+                while(option != 4) {
+                    if (option == 1) {
+                        Question q = Map.getQuestion(currentVal);
+                        cout << "Difficulty: " << q.getMoneyVal() << endl << q.getQuestion() << "?" << endl;
+                        cout << "Press Any Key To Display Answer" << endl;
+                        char answer;
+                        cin >> answer;
+                        cout << q.getAnswer() << endl;
+                        cout << "Was Your Answer Correct?" << endl << "1. Yes" << endl << "2. No" << endl;
+                        cin >> stat;
+                        if (stat == 1) {
+                            correct++;
+                        }
+                        if (stat == 2) {
+                            correct = 0;
+                        }
+                    } else if (option == 2) {
+                        if (currentVal+100 <5000){
+                            currentVal += 100;
+                            correct = 0;
+                        }else{
+                            cout<<"At Max Level"<<endl;
+                            correct = 0;
+                        }
+                        cout<<"New level: "<<currentVal<<endl;
+                    }else if (option == 3){
+                        if (currentVal - 100 >= 0){
+                            currentVal -= 100;
+                            correct = 0;
+                        }else{
+                            cout<<"At Lowest Level"<<endl;
+                            correct = 0;
+                        }
+                        cout<<"New level: "<<currentVal<<endl;
+                    }
+                    if (correct == 3) {
+                        currentVal += 100;
+                        correct = 0;
+                    }
+                    cout << "STUDY MODE: CHOOSE ONE" << endl << "1. Read Question" << endl << "2. Advance Level" << endl << "3. Decrease Level" << endl<<"4. Back"<<endl;
+                    cin >> option;
                 }
             }else if(menuChoice == 2){
                 cout << "Correct Answers: " << correct << endl << "Level: " << currentVal << endl;
-            }
-            //check if level needs to be increased
-            if (correct == 3) {
-                currentVal += 100;
-                correct = 0;
             }
             //study mode or stats
             cout << "JEOPARDY STUDY TOOL: MODE" << endl << "1. Study Mode" << endl << "2. My Stats" << endl << "3. Quit" << endl;
