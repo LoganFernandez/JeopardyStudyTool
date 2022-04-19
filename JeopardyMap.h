@@ -10,7 +10,7 @@ using namespace std;
 //hash table to implement questions
 class JeopardyHashTable {
 private:
-    static const int HashGroups = 50;
+    static const int HashGroups = 100;
     list<pair<int, vector<Question> > > table[HashGroups];
 public:
     int hashFunction(int key){
