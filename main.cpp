@@ -1,4 +1,5 @@
 #include "heap.h"
+#include "JeopardyMap.h"
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -130,6 +131,56 @@ int main()
 
             //print choices again: study mode or stats (heap)
             cout << "JEOPARDY STUDY TOOL: MODE" << endl << "1. Study Mode" << endl << "2. My Stats" << endl << "3. Quit" << endl;
+            cin >> menuChoice;
+        }
+    }else if (dataStructure == 2){
+        JeopardyHashTable Map;
+        //make map with hashtable
+        for (int i = 0; i<JeopardyVector.size(); i++){
+            int key = JeopardyVector[i].getMoneyVal();
+            Question q = JeopardyVector[i];
+            Map.insertQuestion(key, q);
+        }
+        //study mode or stats
+        cout << "JEOPARDY STUDY TOOL: MODE" << endl << "1. Study Mode" << endl << "2. My Stats" << endl << "3. Quit" << endl;
+
+        cout << endl;
+
+        cin >> menuChoice;
+        int currentVal = 0;
+        while(menuChoice != 3){
+            if (!Map.checkLevel(currentVal)){
+                currentVal += 100;
+                continue;
+            }
+            if (menuChoice == 1){
+                Question q = Map.getQuestion(currentVal);
+                cout << "Difficulty: " << q.getMoneyVal() << endl << q.getQuestion() << "?" << endl;
+                cout << "Press Any Key To Display Answer" << endl;
+                char answer;
+                cin >> answer;
+                cout << q.getAnswer() << endl;
+                cout << "Was Your Answer Correct?" << endl << "1. Yes" << endl << "2. No" << endl;
+                cin >> stat;
+                if (stat == 1) {
+                    correct++;
+                }
+                if (stat == 2) {
+                    correct = 0;
+                }
+            }else if(menuChoice == 2){
+                cout << "Correct Answers: " << correct << endl << "Level: " << currentVal << endl;
+            }
+            //check if level needs to be increased
+            if (correct == 3) {
+                currentVal += 100;
+                correct = 0;
+            }
+            //study mode or stats
+            cout << "JEOPARDY STUDY TOOL: MODE" << endl << "1. Study Mode" << endl << "2. My Stats" << endl << "3. Quit" << endl;
+
+            cout << endl;
+
             cin >> menuChoice;
         }
     }
