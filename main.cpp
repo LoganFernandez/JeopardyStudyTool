@@ -8,7 +8,6 @@ using namespace std;
 // read for jeopardy or double jeopardy, money value, questions, and answers
 
 vector<Question> ReadTSV(string file)
-
 {
     vector<Question> JeopardyVector;
     ifstream myFile;
@@ -32,7 +31,7 @@ vector<Question> ReadTSV(string file)
     getline(myFile, line);
 
     // push values into Question object vector
-    while (myFile.good() && test != 1000)
+    while (myFile.good() && test != 100000)
     {
         getline(myFile, round, '\t');
         getline(myFile, value, '\t');
@@ -45,9 +44,12 @@ vector<Question> ReadTSV(string file)
         getline(myFile, line);
 
         //cout << value << " | " << dailyDouble << ", " << question << " | " << answer << endl;
-        JeopardyVector.push_back(Question(moneyValue, question, answer));
-        test++;
-
+        //filter out daily doubles since they cause inconsistincies with moneyValues
+        if (dailyDouble == "no")
+        {
+            JeopardyVector.push_back(Question(moneyValue, question, answer));
+            test++;
+        }
         //cout << endl;
     }
     return JeopardyVector;
@@ -55,7 +57,7 @@ vector<Question> ReadTSV(string file)
 
 int main()
 {
-    vector<Question> JeopardyVector = ReadTSV("kids_teen.tsv");
+    vector<Question> JeopardyVector = ReadTSV("master_season1-35.tsv");
     int correct = 0;
 
     //choose a data structure
@@ -94,7 +96,7 @@ int main()
                         Question q = heap.getQuestion();
                         cout << "Difficulty: " << q.getMoneyVal() << endl << q.getQuestion() << "?" << endl;
                         cout << "Press Any Button To Display Answer" << endl;
-                        int answer;
+                        char answer;
                         cin >> answer;
                         cout << q.getAnswer() << endl;
                         cout << "Was Your Answer Correct?" << endl << "1. Yes" << endl << "2. No" << endl;
@@ -109,6 +111,7 @@ int main()
                         //3 consecutive correct answers advances level
                         if (correct == 3) {
                             heap.advanceLevel(heap.getMin().getMoneyVal(), 0);
+                            correct = 0;
                         }
                     }
 
@@ -116,6 +119,7 @@ int main()
                     else if (option == 2) {
                         heap.advanceLevel(heap.getMin().getMoneyVal(), 0);
                         cout << "New Level: " << heap.getMin().getMoneyVal() << endl;
+                        correct = 0;
                     }
 
                     //print choices again: read or advance (heap)
@@ -133,10 +137,11 @@ int main()
             cout << "JEOPARDY STUDY TOOL: MODE" << endl << "1. Study Mode" << endl << "2. My Stats" << endl << "3. Quit" << endl;
             cin >> menuChoice;
         }
-    }else if (dataStructure == 2){
+    }
+    else if (dataStructure == 2) {
         JeopardyHashTable Map;
         //make map with hashtable
-        for (int i = 0; i<JeopardyVector.size(); i++){
+        for (int i = 0; i < JeopardyVector.size(); i++) {
             int key = JeopardyVector[i].getMoneyVal();
             Question q = JeopardyVector[i];
             Map.insertQuestion(key, q);
@@ -148,17 +153,17 @@ int main()
 
         cin >> menuChoice;
         int currentVal = 0;
-        while(menuChoice != 3){
-            if (!Map.checkLevel(currentVal)){
+        while (menuChoice != 3) {
+            if (!Map.checkLevel(currentVal)) {
                 currentVal += 100;
                 continue;
             }
-            if (menuChoice == 1){
-                cout << "STUDY MODE: CHOOSE ONE" << endl << "1. Read Question" << endl << "2. Advance Level" << endl << "3. Decrease Level" << endl <<"4. Back " <<endl;
+            if (menuChoice == 1) {
+                cout << "STUDY MODE: CHOOSE ONE" << endl << "1. Read Question" << endl << "2. Advance Level" << endl << "3. Decrease Level" << endl << "4. Back " << endl;
                 cout << endl;
                 int option;
                 cin >> option;
-                while(option != 4) {
+                while (option != 4) {
                     if (option == 1) {
                         Question q = Map.getQuestion(currentVal);
                         cout << "Difficulty: " << q.getMoneyVal() << endl << q.getQuestion() << "?" << endl;
@@ -174,33 +179,38 @@ int main()
                         if (stat == 2) {
                             correct = 0;
                         }
-                    } else if (option == 2) {
-                        if (currentVal+100 <5000){
+                    }
+                    else if (option == 2) {
+                        if (currentVal + 100 < 5000) {
                             currentVal += 100;
                             correct = 0;
-                        }else{
-                            cout<<"At Max Level"<<endl;
+                        }
+                        else {
+                            cout << "At Max Level" << endl;
                             correct = 0;
                         }
-                        cout<<"New level: "<<currentVal<<endl;
-                    }else if (option == 3){
-                        if (currentVal - 100 >= 0){
+                        cout << "New level: " << currentVal << endl;
+                    }
+                    else if (option == 3) {
+                        if (currentVal - 100 >= 0) {
                             currentVal -= 100;
                             correct = 0;
-                        }else{
-                            cout<<"At Lowest Level"<<endl;
+                        }
+                        else {
+                            cout << "At Lowest Level" << endl;
                             correct = 0;
                         }
-                        cout<<"New level: "<<currentVal<<endl;
+                        cout << "New level: " << currentVal << endl;
                     }
                     if (correct == 3) {
                         currentVal += 100;
                         correct = 0;
                     }
-                    cout << "STUDY MODE: CHOOSE ONE" << endl << "1. Read Question" << endl << "2. Advance Level" << endl << "3. Decrease Level" << endl<<"4. Back"<<endl;
+                    cout << "STUDY MODE: CHOOSE ONE" << endl << "1. Read Question" << endl << "2. Advance Level" << endl << "3. Decrease Level" << endl << "4. Back" << endl;
                     cin >> option;
                 }
-            }else if(menuChoice == 2){
+            }
+            else if (menuChoice == 2) {
                 cout << "Correct Answers: " << correct << endl << "Level: " << currentVal << endl;
             }
             //study mode or stats

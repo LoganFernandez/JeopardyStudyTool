@@ -10,29 +10,29 @@ using namespace std;
 //hash table to implement questions
 class JeopardyHashTable {
 private:
-    static const int HashGroups = 100;
+    static const int HashGroups = 101;
     list<pair<int, vector<Question> > > table[HashGroups];
 public:
-    int hashFunction(int key){
+    int hashFunction(int key) {
         return (key / 100);
     };
-    bool isEmpty() const{
+    bool isEmpty() const {
         int sum = 0;
-        for (int i = 0; i<HashGroups; i++){
+        for (int i = 0; i < HashGroups; i++) {
             sum += table[i].size();
         }
-        if (!sum){
+        if (!sum) {
             return true;
         }
         return false;
     }
-    void insertQuestion(int key, Question q){
+    void insertQuestion(int key, Question q) {
         int hashVal = hashFunction(key);
         auto& cell = table[hashVal];
         auto iterBegin = begin(cell);
         bool keyExists = false;
-        for (;iterBegin != end(cell); iterBegin++){
-            if (iterBegin->first == key){
+        for (; iterBegin != end(cell); iterBegin++) {
+            if (iterBegin->first == key) {
                 keyExists = true;
                 iterBegin->second.push_back(q);
                 break;
@@ -46,12 +46,12 @@ public:
         }
         return;
     };
-    Question getQuestion(int key){
+    Question getQuestion(int key) {
         int hashVal = hashFunction(key);
         auto& cell = table[hashVal];
         auto iter = begin(cell);
-        for(;iter!=end(cell); iter++){
-            if (iter->first == key){
+        for (; iter != end(cell); iter++) {
+            if (iter->first == key) {
                 srand((unsigned)time(0));
                 int randomIndex = rand() % iter->second.size();
                 return iter->second[randomIndex];
@@ -60,18 +60,17 @@ public:
         //return a question telling no question or answer found at that level
         return Question(key, "no question found at level", "no answer found at level");
     };
-    bool checkLevel(int key){
+    bool checkLevel(int key) {
         int hashVal = hashFunction(key);
         auto& cell = table[hashVal];
         auto iter = begin(cell);
-        for(;iter!=end(cell); iter++){
-            if (iter->first == key && iter->second.size()>0){
+        for (; iter != end(cell); iter++) {
+            if (iter->first == key && iter->second.size() > 0) {
                 return true;
             }
         }
         return false;
     }
 };
-
 
 
