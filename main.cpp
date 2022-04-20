@@ -57,7 +57,7 @@ vector<Question> ReadTSV(string file)
 
 int main()
 {
-    vector<Question> JeopardyVector = ReadTSV("master_season1-35.tsv");
+    vector<Question> JeopardyVector = ReadTSV("kids_teen.tsv");
     int correct = 0;
 
     //choose a data structure
